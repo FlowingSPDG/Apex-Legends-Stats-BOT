@@ -162,8 +162,8 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		log.Printf("stats : %v\n", stats)
 		embed := &discordgo.MessageEmbed{
 			Timestamp: time.Now().Format(time.RFC3339), // Discord wants ISO8601; RFC3339 is an extension of ISO8601 and should be completely compatible.
-			Title:     "❌エラー",
-			Color:     0xff0000, // RED
+			Title:     "✅STATS",
+			Color:     0x00ff00, // Green
 			Image: &discordgo.MessageEmbedImage{
 				URL: stats.Data.PlatformInfo.AvatarURL,
 			},
