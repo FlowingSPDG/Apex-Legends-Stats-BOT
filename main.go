@@ -69,6 +69,8 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 		platform := "origin"
 		id := commands[1]
 		client := &http.Client{}
+		s.ChannelTyping(m.ChannelID)
+		defer s.ChannelTyping("")
 		req, err := http.NewRequest("GET", fmt.Sprintf("https://public-api.tracker.gg/v2/apex/standard/profile/%s/%s", platform, id), nil)
 		req.Header.Add("TRN-Api-Key", *TrackerToken)
 		resp, err := client.Do(req)
