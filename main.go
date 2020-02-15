@@ -217,12 +217,12 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				&discordgo.MessageEmbedField{
 					Name:   "LEVEL",
 					Value:  strconv.Itoa(int(stats.Data.Segments[0].Stats.Level.Value)),
-					Inline: true,
+					Inline: false,
 				},
 				&discordgo.MessageEmbedField{
 					Name:   "RANK",
 					Value:  rank,
-					Inline: true,
+					Inline: false,
 				},
 				&discordgo.MessageEmbedField{
 					Name:   "Kills",
