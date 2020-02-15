@@ -160,9 +160,43 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			return
 		}
 		log.Printf("stats : %v\n", stats)
+
+		var rank string
+		switch {
+		case stats.Data.Segments[0].Stats.RankScore.Value > 10000:
+			rank = "Master"
+		case stats.Data.Segments[0].Stats.RankScore.Value > 7200:
+			rank = "Diamond"
+		case stats.Data.Segments[0].Stats.RankScore.Value > 4800:
+			rank = "Platinum"
+		case stats.Data.Segments[0].Stats.RankScore.Value > 4300:
+			rank = "Gold I"
+		case stats.Data.Segments[0].Stats.RankScore.Value > 3800:
+			rank = "Gold II"
+		case stats.Data.Segments[0].Stats.RankScore.Value > 3300:
+			rank = "Gold III"
+		case stats.Data.Segments[0].Stats.RankScore.Value > 2800:
+			rank = "Gold IV"
+		case stats.Data.Segments[0].Stats.RankScore.Value > 2400:
+			rank = "Silver I"
+		case stats.Data.Segments[0].Stats.RankScore.Value > 2000:
+			rank = "Silver II"
+		case stats.Data.Segments[0].Stats.RankScore.Value > 1600:
+			rank = "Silver III"
+		case stats.Data.Segments[0].Stats.RankScore.Value > 1200:
+			rank = "Silver IV"
+		case stats.Data.Segments[0].Stats.RankScore.Value > 1200:
+			rank = "Bronze I"
+		case stats.Data.Segments[0].Stats.RankScore.Value > 900:
+			rank = "Bronze II"
+		case stats.Data.Segments[0].Stats.RankScore.Value > 600:
+			rank = "Bronze III"
+		case stats.Data.Segments[0].Stats.RankScore.Value > 300:
+			rank = "Bronze IV"
+		}
 		embed := &discordgo.MessageEmbed{
 			Timestamp: time.Now().Format(time.RFC3339), // Discord wants ISO8601; RFC3339 is an extension of ISO8601 and should be completely compatible.
-			Title:     "✅STATS",
+			Title:     "✅STATS取得成功",
 			Color:     0x00ff00, // Green
 			Image: &discordgo.MessageEmbedImage{
 				URL: stats.Data.PlatformInfo.AvatarURL,
@@ -181,6 +215,11 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				&discordgo.MessageEmbedField{
 					Name:   "LEVEL",
 					Value:  strconv.Itoa(int(stats.Data.Segments[0].Stats.Level.Value)),
+					Inline: false,
+				},
+				&discordgo.MessageEmbedField{
+					Name:   "RANK",
+					Value:  rank,
 					Inline: false,
 				},
 				&discordgo.MessageEmbedField{
