@@ -66,7 +66,7 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 			return
 		}
-		platform := "origin"
+		platform := "5" // 1 = XBOX | 2 = PSN | 5 = Origin(PC)
 		id := commands[1]
 		client := &http.Client{}
 		s.ChannelTyping(m.ChannelID)
@@ -101,6 +101,9 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			return
 		}
 		defer resp.Body.Close()
+		// if resp.StatusCode == http.StatusUnauthorized {
+		//
+		// }
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			log.Printf("tracker.gg Request ERR : %v, BODY : %s\n", err, string(body))
@@ -218,9 +221,6 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			Timestamp: time.Now().Format(time.RFC3339), // Discord wants ISO8601; RFC3339 is an extension of ISO8601 and should be completely compatible.
 			Title:     "✅STATS取得成功",
 			Color:     0x00ff00, // Green
-			Image: &discordgo.MessageEmbedImage{
-				URL: stats.Data.PlatformInfo.AvatarURL,
-			},
 			Fields: []*discordgo.MessageEmbedField{
 				&discordgo.MessageEmbedField{
 					Name:   "コマンド送信者",
@@ -258,6 +258,11 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 					Inline: false,
 				},
 			},
+		}
+		if stats.Data.PlatformInfo.AvatarURL != "" {
+			embed.Image = &discordgo.MessageEmbedImage{
+				URL: stats.Data.PlatformInfo.AvatarURL,
+			}
 		}
 		_, err = s.ChannelMessageSendEmbed(m.ChannelID, embed)
 		if err != nil {
