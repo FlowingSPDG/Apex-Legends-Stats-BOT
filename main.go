@@ -199,6 +199,21 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 		}
 
+		level := "UNKNOWN"
+		if len(stats.Data.Segments) > 0 {
+			level = strconv.Itoa(int(stats.Data.Segments[0].Stats.Level.Value))
+		}
+
+		kills := "UNKNOWN"
+		if len(stats.Data.Segments) > 0 {
+			kills = strconv.Itoa(int(stats.Data.Segments[0].Stats.Kills.Value))
+		}
+
+		damages := "UNKNOWN"
+		if len(stats.Data.Segments) > 0 {
+			damages = strconv.Itoa(int(stats.Data.Segments[0].Stats.Damage.Value))
+		}
+
 		embed := &discordgo.MessageEmbed{
 			Timestamp: time.Now().Format(time.RFC3339), // Discord wants ISO8601; RFC3339 is an extension of ISO8601 and should be completely compatible.
 			Title:     "✅STATS取得成功",
@@ -219,7 +234,7 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				},
 				&discordgo.MessageEmbedField{
 					Name:   "LEVEL",
-					Value:  strconv.Itoa(int(stats.Data.Segments[0].Stats.Level.Value)),
+					Value:  level,
 					Inline: false,
 				},
 				&discordgo.MessageEmbedField{
@@ -229,12 +244,12 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 				},
 				&discordgo.MessageEmbedField{
 					Name:   "Kills",
-					Value:  strconv.Itoa(int(stats.Data.Segments[0].Stats.Kills.Value)),
+					Value:  kills,
 					Inline: true,
 				},
 				&discordgo.MessageEmbedField{
 					Name:   "Damages",
-					Value:  strconv.Itoa(int(stats.Data.Segments[0].Stats.Damage.Value)),
+					Value:  damages,
 					Inline: true,
 				},
 				&discordgo.MessageEmbedField{
