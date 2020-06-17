@@ -88,7 +88,7 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 					},
 					&discordgo.MessageEmbedField{
 						Name:   "エラー",
-						Value:  fmt.Sprintf("HTTP GET ERROR : %v", err.Error()),
+						Value:  fmt.Sprintf("HTTP GET ERROR : %s", err.Error()),
 						Inline: false,
 					},
 				},
@@ -101,9 +101,31 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 			return
 		}
 		defer resp.Body.Close()
-		// if resp.StatusCode == http.StatusUnauthorized {
-		//
-		// }
+		if resp.StatusCode == http.StatusNotFound {
+			embed := &discordgo.MessageEmbed{
+				Timestamp: time.Now().Format(time.RFC3339), // Discord wants ISO8601; RFC3339 is an extension of ISO8601 and should be completely compatible.
+				Title:     "❌エラー",
+				Color:     0xff0000, // RED
+				Fields: []*discordgo.MessageEmbedField{
+					&discordgo.MessageEmbedField{
+						Name:   "コマンド送信者",
+						Value:  fmt.Sprintf("<@%s>", m.Author.ID),
+						Inline: false,
+					},
+					&discordgo.MessageEmbedField{
+						Name:   "エラー",
+						Value:  "ユーザーが見つかりませんでした。",
+						Inline: false,
+					},
+				},
+			}
+			_, err := s.ChannelMessageSendEmbed(m.ChannelID, embed)
+			if err != nil {
+				log.Println("Discord send message ERR : ", err)
+				return
+			}
+			return
+		}
 		body, err := ioutil.ReadAll(resp.Body)
 		if err != nil {
 			log.Printf("tracker.gg Request ERR : %v, BODY : %s\n", err, string(body))
@@ -157,6 +179,8 @@ func onMessageCreate(s *discordgo.Session, m *discordgo.MessageCreate) {
 					},
 				},
 			}
+
+			log.Printf("embed: %v\n", embed)
 			_, err := s.ChannelMessageSendEmbed(m.ChannelID, embed)
 			if err != nil {
 				log.Println("Discord send message ERR : ", err)
